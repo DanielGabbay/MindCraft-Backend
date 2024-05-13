@@ -11,19 +11,31 @@ public class User
     [MinLength(3)]
     public string Username { get; set; }
 
-
-    public string Password { get; set; }
+    public string PasswordHash { get; set; } // Hash passwords!
 
     [Required]
     [MaxLength(100)]
     [EmailAddress]
     public string Email { get; set; }
-    
-    public string Role { get; set; }
-    public string Token { get; set; }
+
+    public UserRole Role { get; set; } = UserRole.User;
+    public string Token { get; set; } 
     public string RefreshToken { get; set; }
-    public string RefreshTokenExpiryTime { get; set; }
-    public string CreatedAt { get; set; }
-    public string UpdatedAt { get; set; }
-    public string DeletedAt { get; set; }
+    public DateTime RefreshTokenExpiryTime { get; set; } 
+    public string PasswordSalt { get; set; } // Salt for password hashing
+
+
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; } 
+    public DateTime? DeletedAt { get; set; }
+
+    // Many-to-many relationship between User and UsersGroup entities
+    public ICollection<UsersGroup> Groups { get; set; } = new List<UsersGroup>(); 
+}
+
+public enum UserRole
+{
+    Admin,
+    User,
+    Guest
 }

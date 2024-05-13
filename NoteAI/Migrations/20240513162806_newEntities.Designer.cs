@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NoteAI.Data.Contexts;
 
@@ -11,9 +12,11 @@ using NoteAI.Data.Contexts;
 namespace NoteAI.Migrations
 {
     [DbContext(typeof(MasterContext))]
-    partial class MasterContextModelSnapshot : ModelSnapshot
+    [Migration("20240513162806_newEntities")]
+    partial class newEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,39 +24,6 @@ namespace NoteAI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("NoteAI.Data.Entities.File", b =>
-                {
-                    b.Property<int>("FileId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FileId"));
-
-                    b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<byte[]>("FileData")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("NoteId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UploadDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("FileId");
-
-                    b.HasIndex("NoteId");
-
-                    b.ToTable("Files");
-                });
 
             modelBuilder.Entity("NoteAI.Data.Entities.FileAttachment", b =>
                 {
@@ -67,9 +37,6 @@ namespace NoteAI.Migrations
                         .IsRequired()
                         .HasColumnType("varbinary(max)");
 
-                    b.Property<int>("FileId")
-                        .HasColumnType("int");
-
                     b.Property<string>("FileName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -79,11 +46,9 @@ namespace NoteAI.Migrations
 
                     b.HasKey("FileAttachmentId");
 
-                    b.HasIndex("FileId");
-
                     b.HasIndex("NoteId");
 
-                    b.ToTable("FileAttachments");
+                    b.ToTable("FileAttachment");
                 });
 
             modelBuilder.Entity("NoteAI.Data.Entities.Note", b =>
@@ -157,33 +122,13 @@ namespace NoteAI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TagId"));
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("nvarchar(13)");
-
-                    b.Property<int?>("GroupId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("TagId");
 
-                    b.HasIndex("GroupId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Tags");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Tag");
-
-                    b.UseTphMappingStrategy();
+                    b.ToTable("Tag");
                 });
 
             modelBuilder.Entity("NoteAI.Data.Entities.User", b =>
@@ -194,11 +139,13 @@ namespace NoteAI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("CreatedAt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("DeletedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("DeletedAt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -209,26 +156,25 @@ namespace NoteAI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PasswordSalt")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("RefreshToken")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("RefreshTokenExpiryTime")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("RefreshTokenExpiryTime")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Role")
-                        .HasColumnType("int");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Token")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("UpdatedAt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
                         .IsRequired()
@@ -240,102 +186,28 @@ namespace NoteAI.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("NoteAI.Data.Entities.UsersGroup", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UsersGroups");
-                });
-
             modelBuilder.Entity("NoteTag", b =>
                 {
-                    b.Property<int>("NoteId")
+                    b.Property<int>("NotesNoteId")
                         .HasColumnType("int");
 
-                    b.Property<int>("TagId")
+                    b.Property<int>("TagsTagId")
                         .HasColumnType("int");
 
-                    b.HasKey("NoteId", "TagId");
+                    b.HasKey("NotesNoteId", "TagsTagId");
 
-                    b.HasIndex("TagId");
+                    b.HasIndex("TagsTagId");
 
                     b.ToTable("NoteTag");
                 });
 
-            modelBuilder.Entity("UserGroup", b =>
-                {
-                    b.Property<int>("GroupId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("GroupId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserGroup");
-                });
-
-            modelBuilder.Entity("NoteAI.Data.Entities.GroupTag", b =>
-                {
-                    b.HasBaseType("NoteAI.Data.Entities.Tag");
-
-                    b.HasDiscriminator().HasValue("GroupTag");
-                });
-
-            modelBuilder.Entity("NoteAI.Data.Entities.SystemTag", b =>
-                {
-                    b.HasBaseType("NoteAI.Data.Entities.Tag");
-
-                    b.HasDiscriminator().HasValue("SystemTag");
-                });
-
-            modelBuilder.Entity("NoteAI.Data.Entities.UserTag", b =>
-                {
-                    b.HasBaseType("NoteAI.Data.Entities.Tag");
-
-                    b.HasDiscriminator().HasValue("UserTag");
-                });
-
-            modelBuilder.Entity("NoteAI.Data.Entities.File", b =>
-                {
-                    b.HasOne("NoteAI.Data.Entities.Note", "Note")
-                        .WithMany()
-                        .HasForeignKey("NoteId");
-
-                    b.Navigation("Note");
-                });
-
             modelBuilder.Entity("NoteAI.Data.Entities.FileAttachment", b =>
                 {
-                    b.HasOne("NoteAI.Data.Entities.File", "File")
-                        .WithMany()
-                        .HasForeignKey("FileId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("NoteAI.Data.Entities.Note", "Note")
                         .WithMany("Attachments")
                         .HasForeignKey("NoteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("File");
 
                     b.Navigation("Note");
                 });
@@ -366,47 +238,17 @@ namespace NoteAI.Migrations
                     b.Navigation("Note");
                 });
 
-            modelBuilder.Entity("NoteAI.Data.Entities.Tag", b =>
-                {
-                    b.HasOne("NoteAI.Data.Entities.UsersGroup", "Group")
-                        .WithMany("Tags")
-                        .HasForeignKey("GroupId");
-
-                    b.HasOne("NoteAI.Data.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Group");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("NoteTag", b =>
                 {
                     b.HasOne("NoteAI.Data.Entities.Note", null)
                         .WithMany()
-                        .HasForeignKey("NoteId")
+                        .HasForeignKey("NotesNoteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("NoteAI.Data.Entities.Tag", null)
                         .WithMany()
-                        .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("UserGroup", b =>
-                {
-                    b.HasOne("NoteAI.Data.Entities.UsersGroup", null)
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("NoteAI.Data.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("TagsTagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -418,11 +260,6 @@ namespace NoteAI.Migrations
                     b.Navigation("Logs");
 
                     b.Navigation("RelatedNotes");
-                });
-
-            modelBuilder.Entity("NoteAI.Data.Entities.UsersGroup", b =>
-                {
-                    b.Navigation("Tags");
                 });
 #pragma warning restore 612, 618
         }

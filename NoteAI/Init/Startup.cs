@@ -1,10 +1,7 @@
-using System.Web.Http;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using NoteAI.Data.Contexts;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+using NoteAI.Data.Entities;
+using NoteAI.Data.Repositories;
 
 namespace NoteAI.Init
 {
@@ -19,8 +16,17 @@ namespace NoteAI.Init
             services.AddSwaggerGen();
             services.AddDbContext<MasterContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING"));
+                options.UseSqlServer(Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING"),
+                    op => op.EnableRetryOnFailure()
+                );
             });
+
+            // Services and repositories
+            services.AddScoped<INoteRepository, NoteRepository>();
+            services.AddScoped<ITagRepository, TagRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IFileRepository, FileRepository>();
+            services.AddScoped<IFileAttachmentRepository, FileAttachmentRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
