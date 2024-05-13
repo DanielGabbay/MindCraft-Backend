@@ -1,0 +1,6 @@
+@NoteAI_HostAddress = http://localhost:5286
+
+GET {{NoteAI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
