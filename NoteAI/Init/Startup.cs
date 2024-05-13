@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using NoteAI.Data.Authorization;
 using NoteAI.Data.Contexts;
 using NoteAI.Data.Entities;
 using NoteAI.Data.Repositories;
@@ -33,18 +34,35 @@ namespace NoteAI.Init
         {
             if (env.IsDevelopment())
             {
-                app.UseSwagger(setup => { });
+                app.UseSwagger();
                 app.UseSwaggerUI(setup => { setup.RoutePrefix = "swagger"; });
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
-            app.UseAuthorization();
-            app.UseCors();
-            app.UseStaticFiles();
             app.UseRouting();
+
+            // **Important:** UseAuthentication before UseAuthorization
             app.UseAuthentication();
             app.UseAuthorization();
+
+            // Configure CORS policies
+            app.UseCors(builder =>
+            {
+                builder
+                    .WithOrigins("http://localhost:4200",
+                        "https://yourappdomain.com") // Replace with your allowed origins
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            });
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+
+            // Define endpoints
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers(); // Maps requests to your controllers
+            });
         }
     }
 }
