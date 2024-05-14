@@ -12,7 +12,7 @@ public class SwaggerAuthorizationMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        if (context.Request.Path.StartsWithSegments("/swagger") && !context.User.Identity.IsAuthenticated)
+        if (context.User.Identity != null && context.Request.Path.StartsWithSegments("/swagger") && !context.User.Identity.IsAuthenticated)
         {
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             return;

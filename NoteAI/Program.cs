@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Hosting;
 using NoteAI.Init;
 
 namespace NoteAI;
